@@ -1,0 +1,50 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/cygdrive/c/Users/hothe/CLionProjects/File System/.idea/new.cpp
+new.h
+/cygdrive/c/Users/hothe/CLionProjects/File System/.idea/new.h
+
+/cygdrive/c/Users/hothe/CLionProjects/File System/.idea/new.h
+
+/cygdrive/c/Users/hothe/CLionProjects/File System/FileSystem.cpp
+FileSystem.h
+/cygdrive/c/Users/hothe/CLionProjects/File System/FileSystem.h
+
+/cygdrive/c/Users/hothe/CLionProjects/File System/FileSystem.h
+iostream
+-
+iomanip
+-
+cstring
+-
+stdio.h
+-
+fstream
+-
+IOsystem.h
+/cygdrive/c/Users/hothe/CLionProjects/File System/IOsystem.h
+
+/cygdrive/c/Users/hothe/CLionProjects/File System/IOsystem.cpp
+IOsystem.h
+/cygdrive/c/Users/hothe/CLionProjects/File System/IOsystem.h
+
+/cygdrive/c/Users/hothe/CLionProjects/File System/IOsystem.h
+iostream
+-
+iomanip
+-
+string
+-
+
+/cygdrive/c/Users/hothe/CLionProjects/File System/fileSyscopy.cpp
+
+/cygdrive/c/Users/hothe/CLionProjects/File System/main.cpp
+FileSystem.h
+/cygdrive/c/Users/hothe/CLionProjects/File System/FileSystem.h
+

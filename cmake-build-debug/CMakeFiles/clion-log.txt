@@ -1,0 +1,4 @@
+C:\Users\hothe\.CLion2016.3\system\cygwin_cmake\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_COMPILER=/cygdrive/c/cygwin64/bin/clang++ -D CMAKE_C_COMPILER=/cygdrive/c/cygwin64/bin/clang -G "CodeBlocks - Unix Makefiles" "/cygdrive/c/Users/hothe/CLionProjects/File System"
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /cygdrive/c/Users/hothe/CLionProjects/File System/cmake-build-debug

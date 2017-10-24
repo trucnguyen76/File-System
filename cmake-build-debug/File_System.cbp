@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="File_System"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="clang"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/cygdrive/c/Users/hothe/CLionProjects/File System/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/cygdrive/c/Users/hothe/CLionProjects/File System/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/cygdrive/c/Users/hothe/CLionProjects/File System/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="File_System">
+				<Option output="/cygdrive/c/Users/hothe/CLionProjects/File System/cmake-build-debug/File_System.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/cygdrive/c/Users/hothe/CLionProjects/File System/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/usr/bin/../lib/clang/3.8.1/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/include/w32api"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-cygwin/5.4.0/include/c++"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-cygwin/5.4.0/include/c++/x86_64-pc-cygwin"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-cygwin/5.4.0/include/c++/backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 File_System"/>
+					<CompileFile command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="File_System/fast">
+				<Option output="/cygdrive/c/Users/hothe/CLionProjects/File System/cmake-build-debug/File_System.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/cygdrive/c/Users/hothe/CLionProjects/File System/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/usr/bin/../lib/clang/3.8.1/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/include/w32api"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-cygwin/5.4.0/include/c++"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-cygwin/5.4.0/include/c++/x86_64-pc-cygwin"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-cygwin/5.4.0/include/c++/backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 File_System/fast"/>
+					<CompileFile command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make.exe -j4 -f &quot;/cygdrive/c/Users/hothe/CLionProjects/File\ System/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/cygdrive/c/Users/hothe/CLionProjects/File System/.idea/new.cpp">
+			<Option target="File_System"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/hothe/CLionProjects/File System/.idea/new.h">
+			<Option target="File_System"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/hothe/CLionProjects/File System/FileSystem.cpp">
+			<Option target="File_System"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/hothe/CLionProjects/File System/FileSystem.h">
+			<Option target="File_System"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/hothe/CLionProjects/File System/IOsystem.cpp">
+			<Option target="File_System"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/hothe/CLionProjects/File System/IOsystem.h">
+			<Option target="File_System"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/hothe/CLionProjects/File System/fileSyscopy.cpp">
+			<Option target="File_System"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/hothe/CLionProjects/File System/fileSyscopy.h">
+			<Option target="File_System"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/hothe/CLionProjects/File System/main.cpp">
+			<Option target="File_System"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/hothe/CLionProjects/File System/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
