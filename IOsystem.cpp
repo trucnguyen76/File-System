@@ -2,7 +2,14 @@
 // Created by Elva on 10/10/2017.
 //
 #include "IOsystem.h"
-IOSystem::IOSystem() {}
+IOSystem::IOSystem() {
+    for (int i = 0; i < 64; i++){
+        for (int j = 0; j < 64; j++){
+            ldisk[i][j] = 'x';
+        }
+    }
+
+}
 IOSystem::~IOSystem(){}
 
 void IOSystem::read_block(int i, char *p)

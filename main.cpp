@@ -18,7 +18,7 @@ int main()
     char buffer[193];
     char* command;
     char* parameter;
-    char symbolic_file_name[4];
+    char symbolic_file_name[5];
     char* inputChar;
     int count;
     int OFT_index;
@@ -35,24 +35,24 @@ int main()
         parameter = strtok(NULL, " \t\n");
         if (strcmp(command, "in") == 0) {
             fileSystem.init(parameter);
-            if (parameter != nullptr) {
+            if (parameter == nullptr) {
                 cout << "disk initialized\n";
             } else
                 cout << "disk restored\n";
             disk_initialized = true;
             //status = fileSystem.init(parameter);
         } else if (strcmp(command, "cr") == 0 && disk_initialized) {
-            if (strlen(parameter) > 3)
+            if (strlen(parameter) > 4)
                 cout << "Error create! File name length is greater than 3\n";
             else if (strlen(parameter) < 1)
                 cout << "Error create! File name is too short\n";
             else {
-                cout << parameter << " created\n";
                 convertString(parameter, symbolic_file_name);
-                fileSystem.create(symbolic_file_name);
+                status = fileSystem.create(symbolic_file_name);
+                if(status == 0) cout << parameter << " created\n";
             }
         } else if (strcmp(command, "de") == 0 && disk_initialized) {
-            if (strlen(parameter) > 3)
+            if (strlen(parameter) > 4)
                 cout << "Error delete! File name length is greater than 3\n";
             else if (strlen(parameter) < 1)
                 cout << "Error delete! File name is too short\n";
@@ -63,8 +63,8 @@ int main()
                     cout << parameter << " destroyed\n";
             }
         } else if (strcmp(command, "op") == 0 && disk_initialized) {
-            if (strlen(parameter) > 3)
-                cout << "Error open! File name length is greater than 3\n";
+            if (strlen(parameter) > 4)
+                cout << "Error open! File name length is greater than 4\n";
             else if (strlen(parameter) < 1)
                 cout << "Error open! File name is too short\n";
             else {
@@ -75,7 +75,7 @@ int main()
             }
         } else if (strcmp(command, "cl") == 0 && disk_initialized) {
             OFT_index = stoi(parameter, nullptr, 10);
-            if (OFT_index < 1 || OFT_index > 4) {
+            if (OFT_index < 1 || OFT_index >= 4) {
                 cout << "Error close! Invalid value for OFT index\n";
             } else {
                 status = fileSystem.close(OFT_index);
@@ -106,7 +106,7 @@ int main()
                 bytesWrite = fileSystem.write(OFT_index, inputChar, count);
                 if(bytesWrite != -1){
                     cout << "Bytes write: " << bytesWrite << endl;
-                    cout << buffer << endl;
+//                    cout << buffer << endl;
                 }
             }
         } else if (strcmp(command, "sk") == 0 && disk_initialized) {
@@ -128,9 +128,13 @@ int main()
             cout << "disk saved\n";
         } else if(!disk_initialized)
             cout << "Disk is not initialized\n";
+        /*else if(strcmp(command, "pr") == 0){
+            fileSystem.printFd();
+        }*/
         else if(strcmp(command, "exit") != 0){
             cout << "Invalid command! Please input a new command: \n";
         }
+
     }while(strcmp(command, "exit") != 0);
         return 0;
 }

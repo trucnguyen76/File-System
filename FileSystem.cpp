@@ -4,14 +4,7 @@
 
 #include "FileSystem.h"
 
-FileSystem::FileSystem() {
-    /*
-    initialize_Bitmap();
-    initialize_fileDescriptors();
-    initialize_OFT();
-    initialize_directory();
-     */
-}
+FileSystem::FileSystem() {}
 FileSystem::~FileSystem(){}
 
 void FileSystem::create_MASKMAP(){
@@ -38,6 +31,8 @@ void FileSystem::initialize_Bitmap()
     create_MASKMAP();
 
     //If bit is < 32 -> still in the first int which is bitMap[0]
+    bitMap[0] = 0;
+    bitMap[1] = 0;
     bitMap[0] = bitMap[0] | MASK[0];
     bitMap[0] = bitMap[0] | MASK[1];
     bitMap[0] = bitMap[0] | MASK[2];
@@ -47,15 +42,6 @@ void FileSystem::initialize_Bitmap()
     bitMap[0] = bitMap[0] | MASK[6];
 
     ioSystem.write_block(0, ptr);
-
-    /*
-    int* ptr = (int*) ldisk[0];
-    //First block dedicated to bitmap -> busy
-    bitMap[0] = bitMap[0] | MASK[0];
-    cout << &(ldisk[0]) << " vs " << &(*bitMap) <<  endl;
-    cout << "Bitmap[0] is " << bitMap[0] << endl;
-    cout << "Ldisk[0] is " << *((int*) (ldisk[0])) << endl;
-     */
 }
 
 //This function initialize directory fd as a regular fd which mean it is still free
@@ -73,30 +59,8 @@ void FileSystem::initialize_fileDescriptors() {
             fd_ptr[j].index2 = -1 ;
             fd_ptr[j].index3 = -1;
         }
-/*        for(int j = 0; j < 64; j+=16){
-            cout << "Fd[" << j << "] length is: " << *((int*)&(char_ptr[j])) << endl;
-            cout << "Fd[" << j << "] index 1 is: " << *((int*)&(char_ptr[j + 4])) << endl;
-            cout << "Fd[" << j << "] index 2 is: " << *((int*)&(char_ptr[j + 8])) << endl;
-            cout << "Fd[" << j << "] index 3 is: " << *((int*)&(char_ptr[j + 12])) << endl;
-        }
-*/
         ioSystem.write_block(block_index, char_ptr);
     }
-    /*
-    char array[64];
-    //Print to check the content fds
-    for(int block_index = 1; block_index < 7; block_index++) {
-        ioSystem.read_block(block_index, array);
-        //ioSystem.read_block(block_index, char_ptr);
-        //There are 4 fds each block
-        for(int j = 0; j < 64; j+=16){
-            cout << "Fd[" << j << "] length is: " << *((int*)&(array[j])) << endl;
-            cout << "Fd[" << j << "] index 1 is: " << *((int*)&(array[j + 4])) << endl;
-            cout << "Fd[" << j << "] index 2 is: " << *((int*)&(array[j + 8])) << endl;
-            cout << "Fd[" << j << "] index 3 is: " << *((int*)&(array[j + 12])) << endl;
-        }
-    }
-*/
 }
 
 void FileSystem::initialize_directory() {
@@ -130,26 +94,13 @@ int FileSystem::allocate_ldisk_block(){
 
     while(!find && bit < 64)
     {
-//        if(bit < 32) {
         find = ((bitMap[bit / 32] & MASK[bit%32]) == 0);
         if(find) {
             bitMap[bit / 32] = bitMap[bit/32] | MASK[bit%32];
             ioSystem.write_block(0, block);
-            cout << "Allocate free bit: " << bit << endl;
+            //cout << "Allocate free bit: " << bit << endl;
             return bit;
         }
-//        }
-            /*
-        //else if its in the 2nd half
-        else {
-            find = ((bitMap[1] & MASK[bit - 32]) == 0);
-            if(find) {
-                bitMap[1] = bitMap[1] | MASK[bit - 32];
-                ioSystem.write_block(0, block);
-                return bit;
-            }
-        }
-             */
         bit++;
     }
     ioSystem.write_block(0, block);
@@ -161,70 +112,71 @@ void FileSystem::free_ldisk_block(int bit){
     int *bitMap = (int*) block;
 
     ioSystem.read_block(0, block);
-    cout << "bitmap before change: " << bitMap[0] << "\t" << bitMap[1] << endl;
     bitMap[bit/32] = bitMap[bit/32]  & (~MASK[bit % 32]);
-    cout << "Negate mask bit: " << (~MASK[bit % 32]) << endl;
-    cout << "Free bit: " << bit << endl;
     ioSystem.write_block(0, block);
-
-    ioSystem.read_block(0, block);
-    bitMap = (int*) block;
-    cout << "bitmap after change: " << bitMap[0] << "\t" << bitMap[1] << endl;
 }
 
-void FileSystem::create(char symbolic_file_name[]){   //IN - symbolic file name
+int FileSystem::create(char symbolic_file_name[]){   //IN - symbolic file name
     //This will reuse fd if they are used and set back to free
     bool free_fd_found = false;
     int block_index = 1;
-    int index_in_block;
+    int bytes_index_in_block = 0;
     char array[64];
     int fd;
 
-    if(symbolic_file_name[3] != 0 && symbolic_file_name[2] != 0 && symbolic_file_name[1] != 0){
+    if(symbolic_file_name[4] != 0 && symbolic_file_name[3] != 0 && symbolic_file_name[2] != 0 && symbolic_file_name[1] != 0){
         cout << "CREATE ERROR!!!Exceed maximum length for symbolic file name!\n";
-        return;
+        return -1;
     }
 
-    while(!free_fd_found && block_index < 7)
-    {
+    while(!free_fd_found && block_index < 7) {
         ioSystem.read_block(block_index, array);
 
-        index_in_block = 0;
-        while(!free_fd_found && index_in_block < 64)
+        bytes_index_in_block = 0;
+        while(!free_fd_found && bytes_index_in_block < 64)
         {
             //Check length field in fda
-            if(((fileDescriptor*)(&(array[index_in_block])))->length == -1)
+            if(((fileDescriptor*)(&(array[bytes_index_in_block])))->length == -1)
                  free_fd_found = true;
             else
-                index_in_block += 16;
+                bytes_index_in_block += 16;
         }
         if(!free_fd_found)
             block_index++;
     }
 
     if(free_fd_found) {
-        fd = (block_index - 1) * 4 + index_in_block / 16;
-cout << "Find free fd: " << fd << endl;
+        fd = (block_index - 1) * 4 + bytes_index_in_block / 16;
     }
     else {
         cout << "Error!!! File System is full\n" << endl;
-        return;
+        return -1;
     }
 
 //Find free directory entry
     char dir_entry_ptr[8];
     bool isFree = false;
+    bool sameName = true;
 
     //read return 0 when it hits EOF
     lseek(0,0);
     while(!isFree && read(0, dir_entry_ptr, 8) != 0){
         isFree = ((dir_entry*)(dir_entry_ptr))->fd == -1;
-        if(strcmp(((dir_entry*)(dir_entry_ptr))->symbolic_file_name, symbolic_file_name) == 0 && ((dir_entry*)(dir_entry_ptr))->fd != -1){
-            cout <<"CREATE ERROR!!!File already exists!\n";
-            return;
+        //Check for same name
+        if(((dir_entry*)(dir_entry_ptr))->fd != -1){
+            //cout << "In checking same name\n";
+            int i = 0;
+            sameName = true;
+            while(i < 4 && sameName){
+                sameName = ((dir_entry*)(dir_entry_ptr))->symbolic_file_name[i] ==  symbolic_file_name[i];
+                i++;
+            }
+            if(sameName) {
+                cout << "CREATE ERROR!!!File already exists!\n";
+                return -1;
+            }
         }
     }
-    cout << "Is if free: " << isFree << endl;
     dir_entry new_entry;
     if(isFree){
         lseek(0, (fd - 1) * 8);
@@ -236,16 +188,21 @@ cout << "Find free fd: " << fd << endl;
         for(int  i = 0; i < 4; i++)
             new_entry.symbolic_file_name[i] = symbolic_file_name[i];
         new_entry.fd = fd;
-        //Write new entry to directory
-        //cout << "Size of (dir_entry)" << sizeof(dir_entry) << endl;
-        //cout << "Size of (new_entry)" << sizeof(new_entry) << endl;
+
         write(0,(char*)(&new_entry), sizeof(dir_entry));
 
         //Reserve the file descriptor
-        ((fileDescriptor*)(&array[index_in_block]))->length = 0;
+        ioSystem.read_block(block_index, array);
+        ((fileDescriptor*)(array))[fd % 4].length = 0;
         ioSystem.write_block(block_index, array);
     }
-    cout << "**************End of create****************\n";
+    /*if(!isFree && OFT[0].length != MAX_FILE_LENGTH){
+        OFT[0].length += 8;
+        ioSystem.read_block(1, array);
+        ((fileDescriptor*)(array))[0].length = OFT[0].length;
+        ioSystem.write_block(1, array);
+    }*/
+    return 0;
 }
 int FileSystem::destroy(char symbolic_file_name[]) {  //IN - symbolic file name
     const int INVALID = -1;
@@ -253,11 +210,18 @@ int FileSystem::destroy(char symbolic_file_name[]) {  //IN - symbolic file name
     int temp = 0;
     char dir_entry_ptr[8];
     int fd_index = -1;
+    bool sameName;
+    int index;
 
-    cout << "**************START DESTROY************\n";
     lseek(0, 0);
     while (fd_index == -1 && read(0, dir_entry_ptr, 8) != 0) {
-        if (strcmp(((dir_entry *) (dir_entry_ptr))->symbolic_file_name, symbolic_file_name) == 0) {
+        sameName = true;
+        index = 0;
+        while(sameName && index < 4){
+            sameName = (((dir_entry *)(dir_entry_ptr))->symbolic_file_name[index] == symbolic_file_name[index]);
+            index++;
+        }
+        if (sameName) {
             fd_index = ((dir_entry *) (dir_entry_ptr))->fd;
         }
     }
@@ -274,22 +238,15 @@ int FileSystem::destroy(char symbolic_file_name[]) {  //IN - symbolic file name
     //remove directory entry
     lseek(0, OFT[0].current_pos - 4);
     write(0, (char*)&INVALID, 4);
-
-    for (int i = 0; i < 64; i += 8) {
-        cout << ((dir_entry *) (&(OFT[0].buffer[i])))->fd << endl;
-    }
-
     fileDescriptor block[4];
+
     int block_list[3];
     //Update bit map (if file was not empty)
     int fd_index_in_block = fd_index % 4;
     int block_index_fd_is_in = fd_index / 4 + 1;
 
     ioSystem.read_block(block_index_fd_is_in, (char*)block);
-    cout << "Fd before change: "    << block[fd_index_in_block].length << "\t"
-                                    << block[fd_index_in_block].index1 << "\t"
-                                    << block[fd_index_in_block].index2 << "\t"
-                                    << block[fd_index_in_block].index3 << endl;
+
     block_list[0] = block[fd_index_in_block].index1;
     block_list[1] = block[fd_index_in_block].index2;
     block_list[2] = block[fd_index_in_block].index3;
@@ -304,13 +261,6 @@ int FileSystem::destroy(char symbolic_file_name[]) {  //IN - symbolic file name
     block[fd_index_in_block].index2 = -1;
     block[fd_index_in_block].index3 = -1;
     ioSystem.write_block(block_index_fd_is_in, (char*) block);
-
-    ioSystem.read_block(block_index_fd_is_in, (char*)block);
-    cout << "Fd after change: "    << block[fd_index_in_block].length << "\t"
-         << block[fd_index_in_block].index1 << "\t"
-         << block[fd_index_in_block].index2 << "\t"
-         << block[fd_index_in_block].index3 << endl;
-    cout << "*****************END DESTROY *********\n";
     return 0;
 }
 
@@ -320,13 +270,17 @@ int FileSystem::open(char symbolic_file_name[]){      //IN - symbolic file name
     int block_index; //the index that the block which has the wanted fd in it
     char block[64];
     char dir_entry_ptr[8];
+    char name[5];
 
-    cout << "******START OPEN************\n";
     //Search/Read directory to find index of file descriptor
     //read return 0 when it hits EOF
     lseek(0,0);
     while(read(0, dir_entry_ptr, 8) != 0){
-        if(strcmp(((dir_entry*)(dir_entry_ptr))->symbolic_file_name, symbolic_file_name) == 0){
+        for(int i = 0; i < 4; i++){
+            name[i] = ((dir_entry*)(dir_entry_ptr))->symbolic_file_name[i];
+        }
+        name[4] = 0;
+        if(strcmp(name , symbolic_file_name) == 0 && ((dir_entry*)(dir_entry_ptr))->fd != -1){
             fd_index = ((dir_entry*)(dir_entry_ptr))->fd;
         }
     }
@@ -369,22 +323,21 @@ int FileSystem::open(char symbolic_file_name[]){      //IN - symbolic file name
          ********************************************************************/
         block_index = (fd_index / 4) + 1;
         ioSystem.read_block(block_index, block);
-        //fd_ptr = (fileDescriptor*)(&block[((fd_index - ((block_index - 1) * 4))* 16)]);
         fd_ptr = &(((fileDescriptor*)(block))[fd_index % 4]);
         int newBlock;
         if(fd_ptr->index1 == -1) {
             newBlock = allocate_ldisk_block();
             fd_ptr->index1 = newBlock;
         }
-        //Update index1 of the file
 
+        //Update index1 of the file
         ioSystem.write_block(block_index, block);
         ioSystem.read_block(fd_ptr->index1, OFT[OFT_index].buffer);
         OFT[OFT_index].length = fd_ptr->length;
-        cout << "***********END OPEN*************\n";
+        /*
         for(int i = 0; i < 4; i++){
             cout << OFT[i].index << endl;
-        }
+        }*/
         return OFT_index;
     }
 }
@@ -423,12 +376,11 @@ int FileSystem::close(int OFT_index) {          //IN - OFT index
         block[OFT[OFT_index].index % 4].length = OFT[OFT_index].length;
 
         //Free OFT entry
-        //cout << "OFT_index is: " << OFT_index << endl;
         OFT[OFT_index].index = -1;
-
+/*
         for(int i = 0; i < 4; i++)
             cout << OFT[i].index << endl;
-
+*/
         return 0;
     }
     else
@@ -444,8 +396,6 @@ int FileSystem::read(int OFT_index,         //IN - OFT index
     int current_block;      //The index of the ldisk block that that is currently in buffer (7-63)
     int next_block;         //The index of the ldisk block that would be next in the buffer (7-63)
     int bytesRead;
-//cout << "***************READ*************\n";
-//cout << "Buffer is: " << OFT[OFT_index].buffer << endl;
 
     if(OFT[OFT_index].index == -1){
         cout << "Error! There is no open file at index " << OFT_index << endl;
@@ -457,10 +407,10 @@ int FileSystem::read(int OFT_index,         //IN - OFT index
         bytesRead++){
 
         //If the current read is still inside the buffer
-        if((OFT[OFT_index].current_pos + bytesRead)% 64 != 0 || (OFT[OFT_index].current_pos + bytesRead) == 0) {
+  //      if((OFT[OFT_index].current_pos + bytesRead)% 64 != 0 || (OFT[OFT_index].current_pos + bytesRead) == 0) {
   //          mem_area[bytesRead] = OFT[OFT_index].buffer[inplace_index + bytesRead];
-        }
-        else{
+    //    }else
+        if((OFT[OFT_index].current_pos + bytesRead)% 64 == 0 && (OFT[OFT_index].current_pos + bytesRead) != 0) {
             data_block_number = (OFT[OFT_index].current_pos + bytesRead - 1) / 64;
             fileDescriptor block[4];
             ioSystem.read_block(OFT[OFT_index].index / 4 + 1, (char*)block);
@@ -492,7 +442,6 @@ int FileSystem::read(int OFT_index,         //IN - OFT index
     }
     //current position will be at the one not read yet
     OFT[OFT_index].current_pos += bytesRead;
-    //cout << "******End read: current pos is: " << OFT[OFT_index].current_pos << "********" << endl;
     return bytesRead;
 }
 
@@ -508,10 +457,7 @@ int FileSystem::write(  int OFT_index,              //IN - OFT index
     int next_block;         //The index of the ldisk block that would be next in the buffer (7-63)
     int bytesWrite;
     int mem_area_index = 0;
-/*    cout << "Start WRITE OFT index is " << OFT_index << " ****************\n";
-    cout << "Current position is: " << OFT[OFT_index].current_pos << endl;
-    cout << "Length is: " << OFT[OFT_index].length << endl;
-*/
+    fileDescriptor block[4];
 
     if(OFT[OFT_index].index == -1){
         cout << "Error! There is no open file at index " << OFT_index << endl;
@@ -532,10 +478,8 @@ int FileSystem::write(  int OFT_index,              //IN - OFT index
         else{
             next_block = -1;
             data_block_number = (OFT[OFT_index].current_pos + bytesWrite - 1) / 64;
-            //int fd_block_number = OFT[OFT_index].index / 4;
-            fileDescriptor block[4];
             ioSystem.read_block((OFT[OFT_index].index / 4) + 1, (char*)block);
-            //cin.ignore(100, '\n');
+
             switch(data_block_number){
                 case 0:
                     current_block = block[OFT[OFT_index].index % 4].index1;
@@ -562,11 +506,13 @@ int FileSystem::write(  int OFT_index,              //IN - OFT index
                     cout << "ERROR!!Current block is more than 2\n";
                     break;
             };
-            //Update the new data if there a new block allocated
             ioSystem.write_block((OFT[OFT_index].index / 4) + 1, (char*)block);
             ioSystem.write_block(current_block, OFT[OFT_index].buffer);
-            if(next_block == -1)
+
+            if(next_block == -1) {
                 cout << "WRITE ERROR!!!! Out of ldisk block\n";
+                cout << "WRITE ERROR " << OFT[OFT_index].current_pos + bytesWrite << endl;
+            }
             else
                 ioSystem.read_block(next_block, OFT[OFT_index].buffer);
 
@@ -577,16 +523,38 @@ int FileSystem::write(  int OFT_index,              //IN - OFT index
         }
         mem_area_index++;
     }
+    //Update data in buffer to current block
+    data_block_number = (OFT[OFT_index].current_pos + bytesWrite - 1) / 64;
+    ioSystem.read_block((OFT[OFT_index].index / 4) + 1, (char*)block);
+
+    switch(data_block_number){
+        case 0:
+            current_block = block[OFT[OFT_index].index % 4].index1;
+            break;
+        case 1:
+            current_block = block[OFT[OFT_index].index % 4].index2;
+            break;
+        case 2:
+            current_block = block[OFT[OFT_index].index % 4].index3;
+            break;
+        default:
+            cout << "ERROR!!Current block is more than 2\n";
+            break;
+    };
+    ioSystem.write_block(current_block, OFT[OFT_index].buffer);
+
     //current position will be at the one not read yet
     OFT[OFT_index].current_pos += bytesWrite;
     //If current_pos < length -> overwrite data -> no need to update length
-    if(OFT[OFT_index].current_pos >= OFT[OFT_index].length)
+    if(OFT[OFT_index].current_pos >= OFT[OFT_index].length) {
         OFT[OFT_index].length = OFT[OFT_index].current_pos;
+    }
+    //write back the length
+    //Update the new data if there a new block allocated
+    ioSystem.read_block(OFT[OFT_index].index / 4 + 1, (char*)block);
+    block[OFT[OFT_index].index % 4].length = OFT[OFT_index].length;
+    ioSystem.write_block((OFT[OFT_index].index / 4) + 1, (char*)block);
 
-//    cout << "Current pos is: " << OFT[OFT_index].current_pos << endl;
-//    cout << "length is: " << OFT[OFT_index].length << endl;
-
-//cout << "*********END WRITE. Current pos is: " << OFT[OFT_index].current_pos << "**************" << endl;
     return bytesWrite;
 }
 
@@ -597,10 +565,20 @@ int FileSystem::lseek(int OFT_index,
     int data_block_number;              //The block's number of a file that is currently in the buffer (1, 2 or 3)
     int current_block;                  //The index of the ldisk block that that is currently in buffer (7-63)
     int new_block;                      //The index of the ldisk block that contains the new position (7-63)
-//cout << "***In lSeek***\n";
 
     //Since the current_pos is the one will be read, its not checked if its out of bound yet
     //-> have to check if its >= 64, if it is then we have to change the block
+    if(OFT_index > 4 || OFT_index < 0) {
+        cout << "Seek Error! OFT index out of bound\n";
+        return -1;
+    }else if(OFT[OFT_index].index == -1){
+        cout << "Seek Error! File is not opened\n";
+        return -1;
+    }else if(pos < 0 || pos >= OFT[OFT_index].length){
+        cout << "Seek Error! Position out of bound\n";
+        return -1;
+    }
+
     if(OFT[OFT_index].current_pos % 64 != 0 || OFT[OFT_index].current_pos == 0)
         current_pos_block = OFT[OFT_index].current_pos / 64;
     else
@@ -627,6 +605,7 @@ int FileSystem::lseek(int OFT_index,
                     break;
             };
             ioSystem.write_block(current_block, OFT[OFT_index].buffer);
+
             //Read the new block
             data_block_number = pos / 64;
             switch(data_block_number){
@@ -663,9 +642,8 @@ string FileSystem::directory() {
     lseek(0,0);
     read(0, (char*)block, OFT[0].length);
     for(int i  = 0; i < OFT[0].length / 8; i++){
-        //We dont want to write the null terminator in the  the name -> only go from 0-3
         if(block[i].fd != -1) {
-            for (int j = 0; j < 3 && block[i].symbolic_file_name[j] != 0; j++)
+            for (int j = 0; j < 4 && block[i].symbolic_file_name[j] != 0; j++)
                 list.append(1,block[i].symbolic_file_name[j]);
             list.append(1, '\n');
         }
@@ -687,15 +665,31 @@ void FileSystem::init(char* file_name)     //IN - file to restore the ldisk from
         ifstream iFile(file_name, ifstream::in);
         char buffer[64];
         int block_number;
-
-        if(iFile.fail())
-            perror("Error opening file! File does not exist!");
-        else{
+        fileDescriptor *fd;
+        if(iFile.fail()) {
+            cout << ("Error opening file! File does not exist!");
+            initialize_Bitmap();
+            initialize_fileDescriptors();
+            initialize_OFT();
+            initialize_directory();
+        } else{
             block_number = 0;
             while(!iFile.eof() && block_number < 64){
-                iFile.getline(buffer, 64);
-                ioSystem.read_block(++block_number, buffer);
+                cout << "Block number: " << block_number << endl;
+                for(int i = 0; i < 64; i++){
+                    buffer[i] = iFile.get();
+                }
+                ioSystem.write_block(block_number++, buffer);
             }
+            //Block 7 is the first block of directory always
+            ioSystem.read_block(7, buffer);
+            for(int i = 0; i < 64; i++){
+                OFT[0].buffer[i] = buffer[i];
+            }
+            OFT[0].index = 0;
+            OFT[0].current_pos = 0;
+            ioSystem.read_block(1, buffer);
+            OFT[0].length = ((fileDescriptor*) (buffer))[0].length;
         }
         iFile.close();
     }
@@ -705,16 +699,32 @@ void FileSystem::init(char* file_name)     //IN - file to restore the ldisk from
 void FileSystem::save(char* file_name)     //IN - file to save ldisk to
 {
     ofstream oFile(file_name, ofstream::out);
-    char buffer[65];
+    char buffer[64];
     int index;
     if(oFile.fail())
         perror("Error opening file!");
     else{
+        for(int i = 0; i < 4; i++){
+            if(OFT[i].index != -1) close(i);
+        }
         for (index = 0; index < 64; index++){
             ioSystem.read_block(index, buffer);
-            buffer[64] = '\n';
-            oFile.write(buffer, 65);
+            oFile.write(buffer, 64);
         }
         oFile.close();
+    }
+}
+
+void FileSystem::printFd(){
+    fileDescriptor block[4];
+    for(int i = 1; i < 7; i++){
+        ioSystem.read_block(i, (char*)block);
+        for(int j = 0; j < 4; j++){
+            cout << "Index: " << (i-1)*4 + j << endl;
+            cout << "Length: " << block[j].length << endl;
+            cout << "Index1: " << block[j].index1 << endl;
+            cout << "Index2: " << block[j].index2 << endl;
+            cout << "Index3: " << block[j].index3 << endl;
+        }
     }
 }

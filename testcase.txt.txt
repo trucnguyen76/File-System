@@ -1,0 +1,51 @@
+in
+cr foo1
+cr foo2
+cr foo3
+op foo1
+op foo2
+op foo3
+wr 1 a 200
+wr 2 b 200
+wr 3 c 200
+cr foo4
+cr foo4
+cr foo5
+cr foo6
+cr foo7
+cr foo8
+cr foo9
+cr fo10
+cr fo11
+cr fo12
+cr fo13
+cr fo14
+cr fo15
+cr fo16
+cr fo17
+cr fo18
+cr fo19
+cr fo20
+cr fo21
+cr fo22
+cr fo23
+cr fo24
+cl 1
+cl 2
+cl 3
+op foo4
+op foo5
+op foo6
+wr 1 y 200
+wr 2 u 200
+wr 3 i 200
+cl 1
+cl 2
+sk 3 0
+rd 3 5
+cl 3
+sk 3 0
+rd 3 5
+de fo23
+de foo6
+op foo6

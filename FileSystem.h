@@ -20,7 +20,7 @@ struct OFT_entry{
 };
 
 struct dir_entry{
-    char symbolic_file_name[4];
+    char symbolic_file_name[4] = {0,0,0,0};
     int fd;
 };
 
@@ -38,7 +38,7 @@ public:
 
     ~FileSystem();
 
-    void create(char symbolic_file_name[]);   //IN - symbolic file name
+    int create(char symbolic_file_name[]);   //IN - symbolic file name
     int destroy(char symbolic_file_name[]);  //IN - symbolic file name
     int open(char symbolic_file_name[]);      //IN - symbolic file name
     //RETURN: int - OFT index
@@ -65,6 +65,7 @@ public:
     //This function will save ldisk to a file
     void save(char* file_name);     //IN - file to save ldisk to
 
+    void printFd();
 private:
     const int MAX_FILE_LENGTH = 192;
 
