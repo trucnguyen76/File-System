@@ -125,7 +125,8 @@ int FileSystem::create(char symbolic_file_name[]){   //IN - symbolic file name
     int fd;
 
     if(symbolic_file_name[4] != 0 && symbolic_file_name[3] != 0 && symbolic_file_name[2] != 0 && symbolic_file_name[1] != 0){
-        cout << "CREATE ERROR!!!Exceed maximum length for symbolic file name!\n";
+        //cout << "CREATE ERROR!!!Exceed maximum length for symbolic file name!\n";
+        cout << "error\n";
         return -1;
     }
 
@@ -149,7 +150,8 @@ int FileSystem::create(char symbolic_file_name[]){   //IN - symbolic file name
         fd = (block_index - 1) * 4 + bytes_index_in_block / 16;
     }
     else {
-        cout << "Error!!! File System is full\n" << endl;
+        //cout << "Error!!! File System is full\n" << endl;
+        cout << "error\n";
         return -1;
     }
 
@@ -172,7 +174,8 @@ int FileSystem::create(char symbolic_file_name[]){   //IN - symbolic file name
                 i++;
             }
             if(sameName) {
-                cout << "CREATE ERROR!!!File already exists!\n";
+                //cout << "CREATE ERROR!!!File already exists!\n";
+                cout << "error\n";
                 return -1;
             }
         }
@@ -183,8 +186,7 @@ int FileSystem::create(char symbolic_file_name[]){   //IN - symbolic file name
     }
     //If there is none that is free but the size of directory is not full yet
     if(isFree || OFT[0].length != MAX_FILE_LENGTH){
-        //Fill in entries
-        new_entry;
+        //Fill in entry
         for(int  i = 0; i < 4; i++)
             new_entry.symbolic_file_name[i] = symbolic_file_name[i];
         new_entry.fd = fd;
@@ -226,7 +228,8 @@ int FileSystem::destroy(char symbolic_file_name[]) {  //IN - symbolic file name
         }
     }
     if (fd_index == -1) {
-        cout << "DESTROY ERROR!!!FILE IS NOT FOUND\n";
+        //cout << "DESTROY ERROR!!!FILE IS NOT FOUND\n";
+        cout << "error\n";
         return -1;
     }
 
@@ -285,14 +288,16 @@ int FileSystem::open(char symbolic_file_name[]){      //IN - symbolic file name
         }
     }
     if(fd_index == -1) {
-        cout << "Open ERROR!!!File does not exist!!!\n";
+        //cout << "Open ERROR!!!File does not exist!!!\n";
+        cout << "error\n";
         return -1;
     }
 
     //Check if the file is already opened
     for(int i = 0; i < 4; i++){
         if(OFT[i].index == fd_index){
-            cout << "OPEN ERROR!!! FILE IS ALREADY OPEN\n";
+            //cout << "OPEN ERROR!!! FILE IS ALREADY OPEN\n";
+            cout << "error\n";
             return -1;
         }
     }
@@ -304,7 +309,8 @@ int FileSystem::open(char symbolic_file_name[]){      //IN - symbolic file name
     }
 
     if(OFT_index == 4) {
-        cout << "Can't open file. OFT is full atm!!!\n";
+        //cout << "Can't open file. OFT is full atm!!!\n";
+        cout << "error\n";
         return -1;
     }
     else{
@@ -347,7 +353,8 @@ int FileSystem::close(int OFT_index) {          //IN - OFT index
         //Write buffer to disk
         fileDescriptor block[4];
         if(OFT[OFT_index].index == -1){
-            cout << "CLOSE ERROR!!! FILE ALREADY CLOSED!\n";
+            //cout << "CLOSE ERROR!!! FILE ALREADY CLOSED!\n";
+            cout << "error\n";
             return -1;
         }
 
@@ -398,7 +405,8 @@ int FileSystem::read(int OFT_index,         //IN - OFT index
     int bytesRead;
 
     if(OFT[OFT_index].index == -1){
-        cout << "Error! There is no open file at index " << OFT_index << endl;
+        //cout << "Error! There is no open file at index " << OFT_index << endl;
+        cout << "error\n";
         return -1;
     }
 
@@ -428,7 +436,8 @@ int FileSystem::read(int OFT_index,         //IN - OFT index
                     next_block = -1;
                     break;
                 default:
-                    cerr << "ERROR!!Current block is more than 2\n";
+                    //cerr << "ERROR!!Current block is more than 2\n";
+                    cout << "error\n";
                     break;
             };
 
@@ -460,7 +469,8 @@ int FileSystem::write(  int OFT_index,              //IN - OFT index
     fileDescriptor block[4];
 
     if(OFT[OFT_index].index == -1){
-        cout << "Error! There is no open file at index " << OFT_index << endl;
+        //cout << "Error! There is no open file at index " << OFT_index << endl;
+        cout << "error\n";
         return -1;
     }
     for(bytesWrite = 0;
@@ -503,15 +513,17 @@ int FileSystem::write(  int OFT_index,              //IN - OFT index
                     next_block = -1;
                     break;
                 default:
-                    cout << "ERROR!!Current block is more than 2\n";
+                    //cout << "ERROR!!Current block is more than 2\n";
+                    cout << "error\n";
                     break;
             };
             ioSystem.write_block((OFT[OFT_index].index / 4) + 1, (char*)block);
             ioSystem.write_block(current_block, OFT[OFT_index].buffer);
 
             if(next_block == -1) {
-                cout << "WRITE ERROR!!!! Out of ldisk block\n";
-                cout << "WRITE ERROR " << OFT[OFT_index].current_pos + bytesWrite << endl;
+                //cout << "WRITE ERROR!!!! Out of ldisk block\n";
+                //cout << "WRITE ERROR " << OFT[OFT_index].current_pos + bytesWrite << endl;
+                cout << "error\n";
             }
             else
                 ioSystem.read_block(next_block, OFT[OFT_index].buffer);
@@ -538,7 +550,8 @@ int FileSystem::write(  int OFT_index,              //IN - OFT index
             current_block = block[OFT[OFT_index].index % 4].index3;
             break;
         default:
-            cout << "ERROR!!Current block is more than 2\n";
+            //cout << "ERROR!!Current block is more than 2\n";
+            cout << "error\n";
             break;
     };
     ioSystem.write_block(current_block, OFT[OFT_index].buffer);
@@ -569,13 +582,16 @@ int FileSystem::lseek(int OFT_index,
     //Since the current_pos is the one will be read, its not checked if its out of bound yet
     //-> have to check if its >= 64, if it is then we have to change the block
     if(OFT_index > 4 || OFT_index < 0) {
-        cout << "Seek Error! OFT index out of bound\n";
+        //cout << "Seek Error! OFT index out of bound\n";
+        cout << "error\n";
         return -1;
     }else if(OFT[OFT_index].index == -1){
-        cout << "Seek Error! File is not opened\n";
+        //cout << "Seek Error! File is not opened\n";
+        cout << "error\n";
         return -1;
     }else if(pos < 0 || pos >= OFT[OFT_index].length){
-        cout << "Seek Error! Position out of bound\n";
+        //cout << "Seek Error! Position out of bound\n";
+        cout << "error\n";
         return -1;
     }
 
@@ -601,7 +617,8 @@ int FileSystem::lseek(int OFT_index,
                     current_block = block[OFT[OFT_index].index % 4].index3;
                     break;
                 default:
-                    cerr << "ERROR!!Current block is more than 2\n";
+                    //cerr << "ERROR!!Current block is more than 2\n";
+                    cout << "error\n";
                     break;
             };
             ioSystem.write_block(current_block, OFT[OFT_index].buffer);
@@ -619,7 +636,8 @@ int FileSystem::lseek(int OFT_index,
                     new_block = block[OFT[OFT_index].index % 4].index3;
                     break;
                 default:
-                    cerr << "ERROR!!Current block is more than 2\n";
+                    //cerr << "ERROR!!Current block is more than 2\n";
+                    cout << "error\n";
                     break;
             };
             ioSystem.read_block(new_block,OFT[OFT_index].buffer);
@@ -631,7 +649,8 @@ int FileSystem::lseek(int OFT_index,
         return 0;
     }
     else{
-        cout << "LSEEK ERROR! New position is outside of file!!\n";
+        //cout << "LSEEK ERROR! New position is outside of file!!\n";
+        cout << "error\n";
         return -1;
     }
 }
@@ -667,7 +686,8 @@ void FileSystem::init(char* file_name)     //IN - file to restore the ldisk from
         int block_number;
         fileDescriptor *fd;
         if(iFile.fail()) {
-            cout << ("Error opening file! File does not exist!");
+            //cout << ("Error opening file! File does not exist!");
+            cout << "error\n";
             initialize_Bitmap();
             initialize_fileDescriptors();
             initialize_OFT();
@@ -675,7 +695,7 @@ void FileSystem::init(char* file_name)     //IN - file to restore the ldisk from
         } else{
             block_number = 0;
             while(!iFile.eof() && block_number < 64){
-                cout << "Block number: " << block_number << endl;
+                //cout << "Block number: " << block_number << endl;
                 for(int i = 0; i < 64; i++){
                     buffer[i] = iFile.get();
                 }
@@ -701,9 +721,10 @@ void FileSystem::save(char* file_name)     //IN - file to save ldisk to
     ofstream oFile(file_name, ofstream::out);
     char buffer[64];
     int index;
-    if(oFile.fail())
-        perror("Error opening file!");
-    else{
+    if(oFile.fail()) {
+        //perror("Error opening file!");
+        cout << "error\n";
+    }else{
         for(int i = 0; i < 4; i++){
             if(OFT[i].index != -1) close(i);
         }

@@ -49,3 +49,18 @@ rd 3 5
 de fo23
 de foo6
 op foo6
+op foo7
+op foo8
+op foo9
+wr 1 b 200
+wr 2 m 200
+wr 3 t 200
+cl 1
+cl 2
+cl 3
+op fo10
+op fo11
+op fo12
+wr 1 n 200
+wr 2 j 200
+wr 3 k 200

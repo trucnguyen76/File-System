@@ -43,9 +43,11 @@ int main()
             //status = fileSystem.init(parameter);
         } else if (strcmp(command, "cr") == 0 && disk_initialized) {
             if (strlen(parameter) > 4)
-                cout << "Error create! File name length is greater than 3\n";
+                cout <<"error\n";
+                //cout << "Error create! File name length is greater than 3\n";
             else if (strlen(parameter) < 1)
-                cout << "Error create! File name is too short\n";
+                cout <<"error\n";
+                //cout << "Error create! File name is too short\n";
             else {
                 convertString(parameter, symbolic_file_name);
                 status = fileSystem.create(symbolic_file_name);
@@ -53,9 +55,11 @@ int main()
             }
         } else if (strcmp(command, "de") == 0 && disk_initialized) {
             if (strlen(parameter) > 4)
-                cout << "Error delete! File name length is greater than 3\n";
+                //cout << "Error delete! File name length is greater than 3\n";
+                cout <<"error\n";
             else if (strlen(parameter) < 1)
-                cout << "Error delete! File name is too short\n";
+                //cout << "Error delete! File name is too short\n";
+                cout <<"error\n";
             else {
                 convertString(parameter, symbolic_file_name);
                 status = fileSystem.destroy(symbolic_file_name);
@@ -64,9 +68,11 @@ int main()
             }
         } else if (strcmp(command, "op") == 0 && disk_initialized) {
             if (strlen(parameter) > 4)
-                cout << "Error open! File name length is greater than 4\n";
+                //cout << "Error open! File name length is greater than 4\n";
+                cout <<"error\n";
             else if (strlen(parameter) < 1)
-                cout << "Error open! File name is too short\n";
+                //cout << "Error open! File name is too short\n";
+                cout <<"error\n";
             else {
                 convertString(parameter, symbolic_file_name);
                 OFT_index = fileSystem.open(symbolic_file_name);
@@ -76,7 +82,8 @@ int main()
         } else if (strcmp(command, "cl") == 0 && disk_initialized) {
             OFT_index = stoi(parameter, nullptr, 10);
             if (OFT_index < 1 || OFT_index >= 4) {
-                cout << "Error close! Invalid value for OFT index\n";
+                //cout << "Error close! Invalid value for OFT index\n";
+                cout <<"error\n";
             } else {
                 status = fileSystem.close(OFT_index);
                 if(status != -1)
@@ -86,8 +93,9 @@ int main()
             //parameter would be index
             OFT_index = stoi(parameter, nullptr, 10);
             count = stoi((strtok(NULL, " \t\n")), nullptr, 10);
-            if (OFT_index < 1 || OFT_index > 4) {
-                cout << "Error read! Invalid value for OFT index\n";
+            if (OFT_index < 1 || OFT_index >= 4) {
+                //cout << "Error read! Invalid value for OFT index\n";
+                cout <<"error\n";
             } else {
                 bytesRead = fileSystem.read(OFT_index, buffer, count);
                 buffer[bytesRead] = 0;
@@ -100,8 +108,9 @@ int main()
             OFT_index = stoi(parameter, nullptr, 10);
             inputChar = strtok(NULL, " \t\n");
             count = stoi((strtok(NULL, " \t\n")), nullptr, 10);
-            if (OFT_index < 1 || OFT_index > 4) {
-                cout << "Error write! Invalid value for OFT index\n";
+            if (OFT_index < 1 || OFT_index >= 4) {
+                //cout << "Error write! Invalid value for OFT index\n";
+                cout <<"error\n";
             } else {
                 bytesWrite = fileSystem.write(OFT_index, inputChar, count);
                 if(bytesWrite != -1){
@@ -112,8 +121,9 @@ int main()
         } else if (strcmp(command, "sk") == 0 && disk_initialized) {
             OFT_index = stoi(parameter, nullptr, 10);
             pos = stoi((strtok(NULL, " \t\n")), nullptr, 10);
-            if (OFT_index < 1 || OFT_index > 4) {
-                cout << "Error seek! Invalid value for OFT index\n";
+            if (OFT_index < 1 || OFT_index >= 4) {
+                //cout << "Error seek! Invalid value for OFT index\n";
+                cout <<"error\n";
             } else {
                 status = fileSystem.lseek(OFT_index, pos);
                 if(status != -1){
@@ -127,12 +137,14 @@ int main()
             fileSystem.save(parameter);
             cout << "disk saved\n";
         } else if(!disk_initialized)
-            cout << "Disk is not initialized\n";
-        /*else if(strcmp(command, "pr") == 0){
-            fileSystem.printFd();
-        }*/
+            //cout << "Disk is not initialized\n";
+            cout <<"error\n";
+            /*else if(strcmp(command, "pr") == 0){
+                fileSystem.printFd();
+            }*/
         else if(strcmp(command, "exit") != 0){
-            cout << "Invalid command! Please input a new command: \n";
+            //cout << "Invalid command! Please input a new command: \n";
+            cout <<"error\n";
         }
 
     }while(strcmp(command, "exit") != 0);
